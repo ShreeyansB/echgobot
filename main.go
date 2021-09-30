@@ -29,10 +29,10 @@ func main() {
 
 	// bot.Debug = true
 
-	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://1b22-110-224-131-152.ngrok.io"))
-	if err != nil {
-		log.Fatal("Err: ", err)
-	}
+	// _, err = bot.SetWebhook(tgbotapi.NewWebhook("https://1b22-110-224-131-152.ngrok.io"))
+	// if err != nil {
+	// 	log.Fatal("Err: ", err)
+	// }
 	info, err := bot.GetWebhookInfo()
 	if err != nil {
 		log.Fatal("Err: ", err)
@@ -40,22 +40,14 @@ func main() {
 	fmt.Println(info.URL)
 	updates := bot.ListenForWebhook("/")
 
-	go http.ListenAndServe(":8080", nil)
+	go http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
 	for update := range updates {
 		log.Printf("%+v\n", update.Message.Text)
 
 		if update.Message.IsCommand() {
-			isValidComm := true
+			isDefault := false
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
-			if update.Message.Chat.ID != kGroupID {
-				// if false {
-				msg.Text = "`[!] Bot Not Authorised`"
-				msg.ParseMode = "MarkdownV2"
-				bot.Send(msg)
-				continue
-			}
-
 			switch update.Message.Command() {
 			case "start":
 				msg.Text = "Use this bot to echo some shit.\n/start - Info\n/echo - Echo stuff normally\n/echob - Echo stuff in bold\n/echoi - Echo stuff in italic\n/echou - Echo stuff underlined\n/echom - Echo stuff in monospace\n/echo(b/i/u) - Echo stuff in combinations of b/i/u, order alphabetically"
@@ -86,11 +78,16 @@ func main() {
 				msg.ParseMode = "MarkdownV2"
 				msg.Text = "`" + update.Message.CommandArguments() + "`"
 			default:
-				isValidComm = false
+				isDefault = true
 			}
-			if isValidComm {
-				bot.Send(msg)
+			if isDefault {
+				continue
 			}
+			if update.Message.Chat.ID != kGroupID {
+				msg.Text = "`[!] Bot Not Authorised`"
+				msg.ParseMode = "MarkdownV2"
+			}
+			bot.Send(msg)
 		}
 	}
 }
