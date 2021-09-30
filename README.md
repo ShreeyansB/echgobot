@@ -26,7 +26,7 @@ GROUP_ID=-1039694202194
 ```
 in a new file called .env in root dir.
 
-Finally, set the webhook for your server by CURL-ing he Telegram API.
+Finally, set the webhook for your server by CURL-ing the Telegram API.
 
 > Also use **go mod vendor** to download libraries in root folder for deployment. I used Heroku for deployment.
 
