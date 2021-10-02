@@ -49,5 +49,6 @@ Once all of this is done, run the bot by running the command :
 go run main.go
 ```
 
-> Also use **go mod vendor** to download libraries in root folder for deployment. I used Heroku for deployment.
+> Also use **go mod vendor** to download libraries in root folder for deployment. I used Heroku for deployment. Dont forget to set the environment variables for your preffered method of deployment. Eg: Set Config Vars in Heroku Dashboard.
+
 
